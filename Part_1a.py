@@ -24,13 +24,13 @@ def target(x, y):
     z = np.add(z_1, z_2)
     for i in range(0, z.shape[0]):
         for j in range(0, z.shape[1]):
-            z[i][j] = z[i][j] + 0.01*x[i][j] - 0.01*y[i][j]
+            z[i][j] = z[i][j] + 0.01*x[i][j] - 0.01*y[i][j] + np.random.normal(0, 0.005)
     return z
 
 
 if __name__ == "__main__":
-    #fig = plt.figure()
-    #ax = Axes3D(fig)
+    fig = plt.figure()
+    ax = Axes3D(fig)
     x_input = np.linspace(0, 10, 1000)
     y_input = np.linspace(-5, 5, 1000)
     x_mesh, y_mesh = np.meshgrid(x_input, y_input)
