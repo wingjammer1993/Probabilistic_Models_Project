@@ -53,11 +53,11 @@ class TargetFunction(function2d):
     def __init__(self, bounds=None, sd=None):
         self.input_dim = 2
         if bounds is None:
-            self.bounds = [(0, 10), (-5, 5)]
+            self.bounds = [(-2, 2), (-2, 2)]
         else:
             self.bounds = bounds
-        self.min = [(8, 0)]
-        self.fmin = 0.21
+        self.min = [(0, 0)]
+        self.fmin = 0
         if sd is None:
             self.sd = 0
         else:
@@ -72,12 +72,8 @@ class TargetFunction(function2d):
         else:
             x1 = x[:, 0]
             x2 = x[:, 1]
-            sigma_1 = np.array([[1., -0.5], [-0.5, 1.5]])
-            sigma_2 = np.array([[1., 0.5], [0.5, 1.5]])
-            norm_1 = multivariate_normal([8, 0], sigma_1)
-            norm_2 = multivariate_normal([2, 2], sigma_2)
-            term1 = norm_1.pdf(x) + norm_2.pdf(x)
-            term2 = 0.01*x1 - 0.01*x2
+            term1 = 2*(x1**2) - 1.05 * (x1**4)
+            term2 = (x1**6)/6 + x1*x2 + x2**2
             fval = term1 + term2
             if self.sd == 0:
                 noise = np.zeros(n).reshape(n, 1)
