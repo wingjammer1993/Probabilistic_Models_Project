@@ -1,4 +1,3 @@
-from bayes_opt import BayesianOptimization
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 import sys
 import numpy as np
@@ -8,6 +7,14 @@ sys.path.append("./")
 
 
 def target(x, y):
+    sigma_1 = np.array([[1., -0.5], [-0.5, 1.5]])
+    sigma_2 = np.array([[1., 0.5], [0.5, 1.5]])
+    norm_1 = multivariate_normal([8, 0], sigma_1)
+    norm_2 = multivariate_normal([2, 2], sigma_2)
+    return norm_1.pdf((x, y)) + norm_2.pdf((x, y)) + 0.01*x - 0.01*y + np.random.normal(0, 0.005)
+
+
+def target_map(x, y):
     pos = np.empty(x.shape + (2,))
     pos[:, :, 0] = x
     pos[:, :, 1] = y
@@ -30,6 +37,7 @@ if __name__ == "__main__":
     x_input = np.linspace(0, 10, 1000)
     y_input = np.linspace(-5, 5, 1000)
     x_mesh, y_mesh = np.meshgrid(x_input, y_input)
-    z_value = target(x_mesh, y_mesh)
+    z_value = target_map(x_mesh, y_mesh)
     plt.contourf(x_mesh, y_mesh, z_value)
     plt.show()
+    print(target(4, 0))
