@@ -1,11 +1,10 @@
-import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib.cm import *
 
 
 def f(x, y):
-    # Franke's function (https://www.mathworks.com/help/curvefit/franke.html)
+    # Three camel humps function inverse
     one = 2*x**2 - 1.05*x**4
     two = x**6/6
     three = x*y
@@ -26,3 +25,4 @@ def plot():
 
 
 plot()
+
