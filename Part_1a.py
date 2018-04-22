@@ -1,43 +1,87 @@
-from mpl_toolkits.mplot3d import axes3d, Axes3D
-import sys
+try:
+    from scipy.stats import multivariate_normal
+    from matplotlib import cm
+    from matplotlib.ticker import LinearLocator, FormatStrFormatter
+    import matplotlib.pyplot as plt
+except:
+	pass
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import multivariate_normal
-sys.path.append("./")
 
 
-def target(x, y):
-    sigma_1 = np.array([[1., -0.5], [-0.5, 1.5]])
-    sigma_2 = np.array([[1., 0.5], [0.5, 1.5]])
-    norm_1 = multivariate_normal([8, 0], sigma_1)
-    norm_2 = multivariate_normal([2, 2], sigma_2)
-    return norm_1.pdf((x, y)) + norm_2.pdf((x, y)) + 0.01*x - 0.01*y + np.random.normal(0, 0.005)
+def reshape(x, input_dim):
+    '''
+    Reshapes x into a matrix with input_dim columns
+    '''
+    x = np.array(x)
+    if x.size == input_dim:
+        x = x.reshape((1, input_dim))
+    return x
 
 
-def target_map(x, y):
-    pos = np.empty(x.shape + (2,))
-    pos[:, :, 0] = x
-    pos[:, :, 1] = y
-    sigma_1 = np.array([[1., -0.5], [-0.5, 1.5]])
-    sigma_2 = np.array([[1., 0.5], [0.5, 1.5]])
-    norm_1 = multivariate_normal([8, 0], sigma_1)
-    norm_2 = multivariate_normal([2, 2], sigma_2)
-    z_1 = norm_1.pdf(pos)
-    z_2 = norm_2.pdf(pos)
-    z = np.add(z_1, z_2)
-    for i in range(0, z.shape[0]):
-        for j in range(0, z.shape[1]):
-            z[i][j] = z[i][j] + 0.01*x[i][j] - 0.01*y[i][j] + np.random.normal(0, 0.005)
-    return z
+class function2d:
+
+	def plot(self):
+		bounds = self.bounds
+		x1 = np.linspace(bounds[0][0], bounds[0][1], 100)
+		x2 = np.linspace(bounds[1][0], bounds[1][1], 100)
+		X1, X2 = np.meshgrid(x1, x2)
+		X = np.hstack((X1.reshape(100 * 100, 1), X2.reshape(100 * 100, 1)))
+		Y = self.f(X)
+
+		# fig = plt.figure()
+		# ax = fig.gca(projection='3d')
+		# ax.plot_surface(X1, X2, Y.reshape((100,100)), rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+		# ax.zaxis.set_major_locator(LinearLocator(10))
+		# ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+		# ax.set_title(self.name)
+
+		plt.figure()
+		plt.contourf(X1, X2, Y.reshape((100, 100)), 100)
+		if (len(self.min) > 1):
+			plt.plot(np.array(self.min)[:, 0], np.array(self.min)[:, 1], 'w.', markersize=20, label=u'Observations')
+		else:
+			plt.plot(self.min[0][0], self.min[0][1], 'w.', markersize=20, label=u'Observations')
+		plt.colorbar()
+		plt.xlabel('X1')
+		plt.ylabel('X2')
+		plt.title(self.name)
+		plt.show()
 
 
-if __name__ == "__main__":
-    #fig = plt.figure()
-    #ax = Axes3D(fig)
-    x_input = np.linspace(0, 10, 1000)
-    y_input = np.linspace(-5, 5, 1000)
-    x_mesh, y_mesh = np.meshgrid(x_input, y_input)
-    z_value = target_map(x_mesh, y_mesh)
-    plt.contourf(x_mesh, y_mesh, z_value)
-    plt.show()
-    print(target(4, 0))
+class TargetFunction(function2d):
+
+    def __init__(self, bounds=None, sd=None):
+        self.input_dim = 2
+        if bounds is None:
+            self.bounds = [(0, 10), (-5, 5)]
+        else:
+            self.bounds = bounds
+        self.min = [(8, 0)]
+        self.fmin = 0.21
+        if sd is None:
+            self.sd = 0
+        else:
+            self.sd = sd
+        self.name = 'Target Function'
+
+    def f(self, x):
+        x = reshape(x, self.input_dim)
+        n = x.shape[0]
+        if x.shape[1] != self.input_dim:
+            return 'wrong input dimension'
+        else:
+            x1 = x[:, 0]
+            x2 = x[:, 1]
+            sigma_1 = np.array([[1., -0.5], [-0.5, 1.5]])
+            sigma_2 = np.array([[1., 0.5], [0.5, 1.5]])
+            norm_1 = multivariate_normal([8, 0], sigma_1)
+            norm_2 = multivariate_normal([2, 2], sigma_2)
+            term1 = norm_1.pdf(x) + norm_2.pdf(x)
+            term2 = 0.01*x1 - 0.01*x2
+            fval = term1 + term2
+            if self.sd == 0:
+                noise = np.zeros(n).reshape(n, 1)
+            else:
+                noise = np.random.normal(0, self.sd, n).reshape(n, 1)
+            return fval.reshape(n, 1) + noise
+
