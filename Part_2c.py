@@ -32,20 +32,20 @@ if __name__ == '__main__':
 	z = Part_2a.generate_time_series(1.5, -1, 3, 200)
 	a = np.array([[1.5, -1], [0, 0]])
 	p = np.array([[0.1, 0], [0, 0.1]])
-	q = np.array([[1.5, 0], [0, 0]])
+	q = np.array([[0.9, 0], [0, 0]])
 	h = np.array([1, 0])
-	r = np.array([[1.5, 0], [0, 0]])
+	r = np.array([[0.9, 0], [0, 0]])
 	kf = KalmanFilter(a, p, q, h, r)
-	x_initial = [0, 0]
+	x_initial = [-2, 0]
 	p_initial = copy.deepcopy(p)
 	z_pred = []
 	for i in range(0, len(z)):
 		x_in, p_in = kf.predict(x_initial, p_initial)
-		x_post, p_post = kf.update(x_in, p_in, z[i])
-		z_pred.append(np.dot(h, x_post))
-		x_initial = x_post
-		p_initial = p_post
-		print(z)
+		x_postr, p_postr = kf.update(x_in, p_in, z[i])
+		z_pred.append(np.dot(h, x_postr))
+		x_initial = x_postr
+		p_initial = p_postr
+	print(z_pred)
 	plt.plot(z, color='green')
 	plt.plot(z_pred)
 	plt.show()
