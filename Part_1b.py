@@ -115,7 +115,7 @@ def part_2(max_iter):
     acq_titles = ['Expected improvement', 'Probability of Improvement', 'GP-UCB, beta = .5',
                   'GP-UCB beta = 1.5']
 
-    plt.suptitle('Acquisition Functions')
+    plt.suptitle('Acquisition Functions with Convergence Rates')
     idx = 0
 
     for index, acq in enumerate(acq_list):
