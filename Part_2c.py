@@ -31,17 +31,17 @@ class KalmanFilter:
 if __name__ == '__main__':
 
 	z = Part_2a.generate_time_series(1.5, -1, 3, 200)
-	a = [[1.5, -1], [0, 0]]
-	p = [[3, 0], [0, 3]]
-	q = [[3, 0], [0, 0]]
-	h = [1, 0]
-	r = [[3, 0], [0, 0]]
+	a = np.array([[1.5, -1], [0, 0]])
+	p = np.array([[3, 0], [0, 3]])
+	q = np.array([[3, 0], [0, 0]])
+	h = np.array([1, 0])
+	r = np.array([[3, 0], [0, 0]])
 	kf = KalmanFilter(a, p, q, h, r)
 	for i in range(0, len(z)):
-		x_init = [0, 0]
-		p_init = copy.deepcopy(p)
-		x_in, p_in = kf.predict(x_init, p_init)
-		x_post, p_post = kf.update(x_in, p_in)
+		x_initial = [0, 0]
+		p_initial = copy.deepcopy(p)
+		x_in, p_in = kf.predict(x_initial, p_initial)
+		x_post, p_post = kf.update(x_in, p_in, z[i])
 
 
 
