@@ -22,40 +22,6 @@ def plot_f(x_values, y_values, f):
     plt.show()
 
 
-# def plot2dgpgo(gpgo):
-#     tested_X = gpgo.GP.X
-#     n = 100
-#     r_x, r_y = gpgo.parameter_range[0], gpgo.parameter_range[1]
-#     x_test = np.linspace(r_x[0], r_x[1], n)
-#     y_test = np.linspace(r_y[0], r_y[1], n)
-#     z_hat = np.empty((len(x_test), len(y_test)))
-#     z_var = np.empty((len(x_test), len(y_test)))
-#     ac = np.empty((len(x_test), len(y_test)))
-#     for i in range(len(x_test)):
-#         for j in range(len(y_test)):
-#             res = gpgo.GP.predict([x_test[i], y_test[j]])
-#             z_hat[i, j] = res[0]
-#             z_var[i, j] = res[1][0]
-#             ac[i, j] = -gpgo._acqWrapper(np.atleast_1d([x_test[i], y_test[j]]))
-#     fig = plt.figure()
-#     a = fig.add_subplot(2, 2, 1)
-#     a.set_title('Posterior mean')
-#     plt.imshow(z_hat.T, origin='lower', extent=[r_x[0], r_x[1], r_y[0], r_y[1]])
-#     plt.colorbar()
-#     plt.plot(tested_X[:, 0], tested_X[:, 1], 'wx', markersize=10)
-#     a = fig.add_subplot(2, 2, 2)
-#     a.set_title('Posterior variance')
-#     plt.imshow(z_var.T, origin='lower', extent=[r_x[0], r_x[1], r_y[0], r_y[1]])
-#     plt.plot(tested_X[:, 0], tested_X[:, 1], 'wx', markersize=10)
-#     plt.colorbar()
-#     a = fig.add_subplot(2, 2, 3)
-#     a.set_title('Acquisition function')
-#     plt.imshow(ac.T, origin='lower', extent=[r_x[0], r_x[1], r_y[0], r_y[1]])
-#     plt.colorbar()
-#     gpgo._optimizeAcq(method='L-BFGS-B', n_start=500)
-#     plt.plot(gpgo.best[0], gpgo.best[1], 'gx', markersize=15)
-#     plt.tight_layout()
-
 def plot_convergence(model, title_text):
     sampled_values = model.history
     best_iteration = []
@@ -66,6 +32,27 @@ def plot_convergence(model, title_text):
     plt.ylabel("Recovered Optimum of Target Fucntion")
     plt.title(title_text)
     plt.plot(best_iteration, 'r--')
+
+
+def plot_acquisition(gpgo, param, index, colors, acq_titles, new=True):
+    n = 100
+    r_x, r_y = gpgo.parameter_range[0], gpgo.parameter_range[1]
+    x_test = np.linspace(r_x[0], r_x[1], n)
+    y_test = np.linspace(r_y[0], r_y[1], n)
+    z_hat = np.empty((len(x_test), len(y_test)))
+    z_var = np.empty((len(x_test), len(y_test)))
+    ac = np.empty((len(x_test), len(y_test)))
+    for i in range(len(x_test)):
+        for j in range(len(y_test)):
+            res = gpgo.GP.predict([x_test[i], y_test[j]])
+            z_hat[i, j] = res[0]
+            z_var[i, j] = res[1][0]
+            ac[i, j] = -gpgo._acqWrapper(np.atleast_1d([x_test[i], y_test[j]]))
+    plt.title(acq_titles)
+    plt.imshow(ac.T, origin='lower', extent=[r_x[0], r_x[1], r_y[0], r_y[1]])
+    plt.colorbar()
+    gpgo._optimizeAcq(method='L-BFGS-B', n_start=500)
+    plt.plot(gpgo.best[0], gpgo.best[1], 'gx', markersize=15)
 
 
 def plot_figure():
@@ -113,10 +100,43 @@ def part_1(max_iter):
     plt.show()
 
 
-if __name__ == '__main__':
+def part_2(max_iter):
+    acq_1 = Acquisition(mode='ExpectedImprovement')
+    acq_2 = Acquisition(mode='ProbabilityImprovement')
+    acq_3 = Acquisition(mode='UCB', beta=0.5)
+    acq_4 = Acquisition(mode='UCB', beta=1.5)
+    acq_list = [acq_1, acq_2, acq_3, acq_4]
+    sqexp = squaredExponential()
+    param = OrderedDict()
+    param['x'] = ('cont', [-2, 2])
+    param['y'] = ('cont', [-2, 2])
+    new = True
+    colors = ['green', 'red', 'orange', 'black']
+    acq_titles = ['Expected improvement', 'Probability of Improvement', 'GP-UCB, beta = .5',
+                  'GP-UCB beta = 1.5']
 
-    plot_figure()
-    part_1(max_iter=5)
+    plt.suptitle('Acquisition Functions')
+    idx = 0
+
+    for index, acq in enumerate(acq_list):
+        np.random.seed(200)
+        gp = GaussianProcess(sqexp)
+        gpgo = GPGO(gp, acq, Part_1a.f, param)
+        gpgo.run(max_iter=max_iter)
+        plt.subplot(4, 2, idx+1)
+        plot_acquisition(gpgo, param, index + 2, colors, acq_titles[index], new=new)
+        plt.subplot(4, 2, idx+2)
+        plot_convergence(gpgo, acq_titles[index])
+        new = False
+        idx = idx + 2
+    plt.show()
+
+
+if __name__ == '__main__':
+    max_iterations = 5
+    # plot_figure()
+    # part_1(max_iter=5)
+    part_2(max_iterations)
 
 
 
