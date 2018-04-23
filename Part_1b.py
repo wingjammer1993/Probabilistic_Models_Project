@@ -29,7 +29,7 @@ def plot_convergence(model, title_text):
         best_sofar = max(sampled_values[0:i])
         best_iteration.append(best_sofar)
     plt.xlabel("Iterations")
-    plt.ylabel("Recovered Optimum of Target Fucntion")
+    plt.ylabel("Recovered Optimum")
     plt.title(title_text)
     plt.plot(best_iteration, 'r--')
 
@@ -133,7 +133,7 @@ def part_2(max_iter):
 
 
 if __name__ == '__main__':
-    max_iterations = 5
+    max_iterations = 10
     # plot_figure()
     # part_1(max_iter=5)
     part_2(max_iterations)
