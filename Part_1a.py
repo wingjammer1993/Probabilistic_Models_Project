@@ -1,7 +1,7 @@
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib.cm import *
-
+import numpy as np
 
 def f(x, y):
     # Three camel humps function inverse
@@ -9,7 +9,7 @@ def f(x, y):
     two = x**6/6
     three = x*y
     four = y**2
-    return -(one + two + three + four)
+    return -(one + two + three + four) + np.random.normal(0, 0.1)
 
 
 def plot_func():
