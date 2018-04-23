@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.cm import *
 import numpy as np
 
+
 def f(x, y):
     # Three camel humps function inverse
     one = 2*x**2 - 1.05*x**4

@@ -134,8 +134,8 @@ def part_2(max_iter):
 
 if __name__ == '__main__':
     max_iterations = 10
-    # plot_figure()
-    # part_1(max_iter=5)
+    plot_figure()
+    part_1(max_iter=5)
     part_2(max_iterations)
 
 
