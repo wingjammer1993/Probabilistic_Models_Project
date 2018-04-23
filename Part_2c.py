@@ -3,10 +3,10 @@ import copy
 import Part_2a
 import matplotlib.pyplot as plt
 
+
 class KalmanFilter:
-	def __init__(self, A, P, Q, H, R,):
+	def __init__(self, A, Q, H, R,):
 		self.matrix_A = copy.deepcopy(A)
-		#self.matrix_P = copy.deepcopy(P)
 		self.matrix_H = copy.deepcopy(H)
 		self.matrix_Q = copy.deepcopy(Q)
 		self.matrix_R = copy.deepcopy(R)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 	q = np.array([[0.9, 0], [0, 0]])
 	h = np.array([1, 0])
 	r = np.array([[0.9, 0], [0, 0]])
-	kf = KalmanFilter(a, p, q, h, r)
+	kf = KalmanFilter(a, q, h, r)
 	x_initial = [-2, 0]
 	p_initial = copy.deepcopy(p)
 	z_pred = []
