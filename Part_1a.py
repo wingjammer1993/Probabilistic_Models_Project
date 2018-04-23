@@ -12,7 +12,7 @@ def f(x, y):
     return -(one + two + three + four)
 
 
-def plot():
+def plot_func():
     x = np.linspace(2, -2, num=1000)
     y = np.linspace(2, -2, num=1000)
     X, Y = np.meshgrid(x, y)
@@ -24,5 +24,4 @@ def plot():
     plt.show()
 
 
-plot()
 
