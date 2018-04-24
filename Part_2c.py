@@ -32,7 +32,7 @@ if __name__ == '__main__':
 	z = Part_2a.generate_time_series(1.5, -1, 3, 200)
 	a = np.array([[1.5, -1], [1, 0]])  # state transition matrix
 	p = np.array([[0.9, 0], [0, 0.9]])  # process covariance
-	q = np.array([[1.732, 0], [0, 1.732]])  # state covariance
+	q = np.array([[5, 0], [0, 5]])  # state covariance
 	h = np.array([1, 0])  # observation matrix
 	r = np.array([[1.732, 0], [0, 1.732]])  # observation covariance
 	kf = KalmanFilter(a, q, h, r)
