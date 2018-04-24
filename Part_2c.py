@@ -30,13 +30,13 @@ class KalmanFilter:
 if __name__ == '__main__':
 
 	z = Part_2a.generate_time_series(1.5, -1, 3, 200)
-	a = np.array([[1.5, -1], [0, 0]])
-	p = np.array([[0.1, 0], [0, 0.1]])
-	q = np.array([[0.9, 0], [0, 0]])
-	h = np.array([1, 0])
-	r = np.array([[0.9, 0], [0, 0]])
+	a = np.array([[1.5, -1], [1, 0]])  # state transition matrix
+	p = np.array([[0.9, 0], [0, 0.9]])  # process covariance
+	q = np.array([[1.732, 0], [0, 1.732]])  # state covariance
+	h = np.array([1, 0])  # observation matrix
+	r = np.array([[1.732, 0], [0, 1.732]])  # observation covariance
 	kf = KalmanFilter(a, q, h, r)
-	x_initial = [-2, 0]
+	x_initial = [0, 0]
 	p_initial = copy.deepcopy(p)
 	z_pred = []
 	for i in range(0, len(z)):
