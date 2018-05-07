@@ -29,26 +29,27 @@ class KalmanFilter:
 
 if __name__ == '__main__':
 
-	z = Part_2a.generate_time_series(1.5, -1, 0.2, 200)
-	a = np.array([[1.5, -1], [-1, 0]])  # state transition matrix
-	p = np.array([[0.5, 0], [0, 0.5]])  # process covariance
-	q = np.array([[5, 0], [0, 5]])  # state covariance
+	z, y_true = Part_2a.generate_time_series(1.5, -1, 0.2, 200)
+	a = np.array([[1.5, -1], [1, 0]])  # state transition matrix
+	q = np.array([[0.04, 0], [0, 0.04]])  # state covariance
 	h = np.array([1, 0])  # observation matrix
-	r = np.array([3])  # observation covariance
+	r = np.array([0.2])  # observation covariance
 	kf = KalmanFilter(a, q, h, r)
 	x_initial = [0, 0]
+	p = np.array([[50, 0], [0, 50]])  # process covariance
 	p_initial = copy.deepcopy(p)
-	z_pred = []
+	x_posts = []
 	for i in range(0, len(z)):
 		x_in, p_in = kf.predict(x_initial, p_initial)
 		x_postr, p_postr = kf.update(x_in, p_in, z[i])
-		h = h.reshape(1,2)
-		z_pred.append(np.dot(h, x_postr))
 		x_initial = x_postr
 		p_initial = p_postr
-	print(z_pred)
+		x_posts.append(x_postr[0])
+	print(x_posts)
+
 	plt.plot(z, color='green')
-	plt.plot(z_pred)
+	plt.plot(y_true, color='red')
+	plt.plot(x_posts, color='purple')
 	plt.show()
 
 
