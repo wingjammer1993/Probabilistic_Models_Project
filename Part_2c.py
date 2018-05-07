@@ -29,7 +29,7 @@ class KalmanFilter:
 
 if __name__ == '__main__':
 
-	z, y_true = Part_2a.generate_time_series(1.5, -1, 0.2, 200)
+	z, y_true = Part_2a.generate_time_series(1.5, -0.99, 0.2, 200)
 	a = np.array([[1.5, -1], [1, 0]])  # state transition matrix
 	q = np.array([[0.04, 0], [0, 0.04]])  # state covariance
 	h = np.array([1, 0])  # observation matrix
