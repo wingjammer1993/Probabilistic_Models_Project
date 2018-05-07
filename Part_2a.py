@@ -23,5 +23,5 @@ def generate_time_series(alpha_1, alpha_2, sigma, samples):
 	return z, y_1
 
 
-generate_time_series(1.5, -0.99, 3, 200)
+generate_time_series(0.5,  0.1, 0.2, 200)
 
