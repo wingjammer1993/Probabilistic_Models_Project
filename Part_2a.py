@@ -18,7 +18,8 @@ def generate_time_series(alpha_1, alpha_2, sigma, samples):
 	plt.ylabel("Observation")
 	plt.title("Autoregressive Time Series")
 	plt.show()
-	return z
+	return z, y_1
 
 
 generate_time_series(1.5, -1, 3, 200)
+
