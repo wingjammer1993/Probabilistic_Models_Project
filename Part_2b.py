@@ -23,10 +23,19 @@ def generate_lds(alpha_1, alpha_2, sigma, samples):
 		y_1[i] = alpha_mode_1*y_1[i-1] + alpha_mode_2*y_2[i-1] + mu_y1
 		z[i] = y_1[i] + mu_z
 		mode_record[i] = mode
-	plt.plot(z)
+	plt.subplot(211)
+	plt.plot(z, label="z")
+	plt.plot(y_1, label="y_1")
 	plt.xlabel("Time")
 	plt.ylabel("Observation")
 	plt.title("Switched Linear Dynamic System with 3 modes")
+	plt.legend()
+	plt.subplot(212)
+	plt.xlabel("Time")
+	plt.ylabel("Modes")
+	plt.title("Variation of modes in the SLDS")
+	plt.yticks([0, 1, 2])
+	plt.plot(mode_record, color = 'purple')
 	plt.show()
 	return mode_record
 
